@@ -21,11 +21,7 @@ namespace YamlConfigCreator
         {
             if (args.Length <= 1)
                 return false;
-            
-            foreach (var arg in args)
-            {
-                Console.WriteLine(arg);
-            }
+
 
             File = GetArg(args, "-f");
             ActivationFunction = ( GetArg(args, "-a") != "") ? GetArg(args, "-a"): ActivationFunction;
@@ -36,7 +32,7 @@ namespace YamlConfigCreator
             //string fileResult = args.ToList().Single(s => s == "-f");
 
 
-            return !string.IsNullOrEmpty(File) && !string.IsNullOrEmpty(OutputFeature);
+            return !string.IsNullOrEmpty(File);
         }
 
         private static string GetArg(string[] args, string searchParam)

@@ -1,6 +1,6 @@
 .DS_Store
 .idea
-
+Results/*
  User-specific files
 *.suo
 *.user
