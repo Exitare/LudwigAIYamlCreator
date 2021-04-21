@@ -8,15 +8,19 @@ namespace YamlConfigCreator
         public static string OutputFeature { get; set; }
         public static string File { get; set; }
         public static string ActivationFunction { get; set; } = "relu";
-        public static uint NumLayers { get; set; } = 0;
-        public static uint Dropout { get; set; } = 0;
+        public static int NumLayers { get; set; } = 20;
+        public static int Dropout { get; set; } = 10;
         public static string Normalization { get; set; } = "minmax";
 
+        public static string Loss { get; set; } = "mean_squared_error";
 
-        public static void LoadArgs(string[] args)
+        public static int FCSize { get; set; } = 512;
+
+
+        public static bool LoadArgs(string[] args)
         {
             if (args.Length <= 1)
-                return;
+                return false;
             
             foreach (var arg in args)
             {
@@ -25,11 +29,14 @@ namespace YamlConfigCreator
 
             File = GetArg(args, "-f");
             ActivationFunction = ( GetArg(args, "-a") != "") ? GetArg(args, "-a"): ActivationFunction;
-            NumLayers = (GetArg(args, "-n") != "") ? Convert.ToUInt32(GetArg(args, "-n")) : NumLayers;
+            NumLayers = (GetArg(args, "-n") != "") ? Convert.ToInt32(GetArg(args, "-n")) : NumLayers;
+            Dropout = (GetArg(args, "-d") != "") ? Convert.ToInt32(GetArg(args, "-d")) : Dropout;
+            OutputFeature = GetArg(args, "-o");
+            Normalization =(GetArg(args, "-n") != "") ? GetArg(args, "-n") : Normalization;
             //string fileResult = args.ToList().Single(s => s == "-f");
-           
-            
-            Console.WriteLine($"File {File}");
+
+
+            return !string.IsNullOrEmpty(File) && !string.IsNullOrEmpty(OutputFeature);
         }
 
         private static string GetArg(string[] args, string searchParam)

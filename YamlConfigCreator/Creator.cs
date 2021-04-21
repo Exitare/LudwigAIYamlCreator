@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using YamlConfigCreator.Entities;
@@ -8,25 +9,34 @@ namespace YamlConfigCreator
 {
     public class Creator
     {
-        public static void CreateYAML(List<string> inputMarkers, string outputMarker)
+        public static void CreateYaml(List<string> availableMarkers)
         {
             var inputs = new List<InputFeature>();
 
-            if (inputMarkers.Contains("ERK1_1") && inputMarkers.Contains("ERK1_2"))
-                inputMarkers.Remove("ERK1_1");
+
+            if (!availableMarkers.Contains(Configuration.OutputFeature))
+            {
+                Console.WriteLine($"Dataset does not contain specified output feature {Configuration.OutputFeature}");
+                Environment.Exit(20);
+            }
+
+            availableMarkers.Remove(Configuration.OutputFeature);
+            
+            if (availableMarkers.Contains("ERK1_1") && availableMarkers.Contains("ERK1_2"))
+                availableMarkers.Remove("ERK1_1");
             
             
             
-            foreach (var marker in inputMarkers)
+            foreach (var marker in availableMarkers)
             {
                 inputs.Add(  new InputFeature()
                 {
                     Name = marker,
                     Type = "numerical",
-                    Dropout = 10,
-                    NumLayers = 20,
-                    Normalization = "minmax",
-                    Activation = "relu",
+                    Dropout = Configuration.Dropout,
+                    NumLayers =Configuration.NumLayers,
+                    Normalization = Configuration.Normalization,
+                    Activation = Configuration.ActivationFunction,
                 });   
             }
 
@@ -37,15 +47,15 @@ namespace YamlConfigCreator
                 {
                     new OutputFeature()
                     {
-                        Name = "CD45",
+                        Name = Configuration.OutputFeature,
                         Type = "numerical",
-                        Activation = "relu",
-                        Normalization = "minmax",
-                        NumLayers = 2,
-                        FcSize = 512,
+                        Activation = Configuration.ActivationFunction,
+                        Normalization = Configuration.Normalization,
+                        NumLayers = Configuration.NumLayers,
+                        FcSize = Configuration.FCSize,
                         Loss = new OutputFeatureLoss
                         {
-                            Type = "mean_squared_error",
+                            Type = Configuration.Loss,
                         }
                     } 
                 },
@@ -61,7 +71,7 @@ namespace YamlConfigCreator
                 .WithNamingConvention(UnderscoredNamingConvention.Instance)
                 .Build();
             var yaml = serializer.Serialize(ludwigAi);
-            File.WriteAllText("WriteLines.txt", yaml);
+            File.WriteAllText("TestConfig.yaml", yaml);
             
         }
     }
