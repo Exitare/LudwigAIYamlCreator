@@ -89,7 +89,14 @@ namespace YamlConfigCreator
                 {
                     BatchSize = 96,
                     Epochs = 100,
-                }
+                },
+                Preproccesing = new List<Preprocessing>
+                {
+                    new()
+                    {
+                        Numerical = Configuration.Normalization
+                    }
+                },
             };
 
 
